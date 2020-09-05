@@ -14,7 +14,7 @@ const Student = {
 };
 
 function start() {
-  console.log("ready");
+  console.log("start");
 
   loadJSON();
 }

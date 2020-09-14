@@ -1,0 +1,339 @@
+/******** GENERELLE INDSTILLINGER ********/
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #f4f4f4;
+}
+
+img {
+  width: 100%;
+}
+
+h1 {
+  font-family: cormorant-garamond, serif;
+  font-weight: 700;
+  font-style: normal;
+  color: #7a645a;
+  margin: 0;
+}
+
+h2 {
+  color: #7a645a;
+  font-family: cormorant-garamond, serif;
+  font-weight: 700;
+  margin: 0;
+}
+
+h3 {
+  color: #7a645a;
+  font-family: cormorant-garamond, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+p {
+  font-family: brandon-grotesque, sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  color: #7a645a;
+  font-size: 1rem;
+  margin: 0;
+}
+
+a {
+  font-family: brandon-grotesque, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  text-transform: uppercase;
+  width: auto;
+  text-decoration: none;
+  color: #000;
+  margin: 0;
+}
+/******** GENERELLE INDSTILLINGER SLUT ********/
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/******** HEADER + NAV ********/
+header {
+  width: 100vw;
+  height: 80px;
+  background-color: #fff;
+  display: flex;
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+nav a {
+  font-family: cormorant-garamond, serif;
+  font-weight: 700;
+  font-style: normal;
+  color: #7a645a;
+  font-size: 1.35rem;
+  transition: 0.2s all ease-in;
+}
+
+nav a:hover {
+  font-family: cormorant-garamond, serif;
+  font-size: 1.37rem;
+  color: #64524a;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+}
+
+.filter-dropdown-container,
+.sort-dropdown-container {
+  display: flex;
+  flex-direction: column;
+  margin-right: 100px;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+}
+
+.filter-dropdown,
+.sort-dropdown {
+  padding-top: 20px;
+  display: none;
+  flex-direction: column;
+  transition: 0.3s all ease-in;
+}
+
+.filter-dropdown-container:hover .filter-dropdown,
+.sort-dropdown-container:hover .sort-dropdown {
+  display: flex;
+  z-index: 0;
+  position: absolute;
+  top: 10px;
+  left: -38px;
+}
+
+.filter-dropdown button,
+.sort-dropdown button {
+  width: 140px;
+  height: 40px;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  border-top: 1px solid #7a645a;
+  font-family: brandon-grotesque, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  color: #7a645a;
+  text-transform: uppercase;
+  transition: 0.3s all ease-in;
+}
+
+.filter-dropdown button:hover,
+.sort-dropdown button:hover {
+  font-weight: 700;
+}
+
+.search-container #search-input {
+  height: 30px;
+  width: 180px;
+  padding: 0 25px;
+  background-color: #f4f4f4;
+  color: #7a645a;
+  border: none;
+  font-family: brandon-grotesque, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 25px;
+  transition: 0.3s all ease-in;
+}
+
+.search-container #search-input:hover,
+.search-container #search-input:focus {
+  width: 220px;
+  outline: none;
+}
+/******** HEADER + NAV SLUT ********/
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/******** STUDENT LIST VIEW ********/
+main {
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.hogwarts-wrapper {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
+.hogwarts-info-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 70px;
+}
+
+.hogwarts-info-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.hogwarts-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hogwarts-info .col p {
+  font-size: 1.15rem;
+}
+
+#all-students {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-column-gap: 2vw;
+  grid-row-gap: 35px;
+  margin: 70px auto 70px auto;
+  max-width: 1200px;
+  padding: 0 15px;
+}
+
+.student {
+  background-color: #7a645a;
+  padding: 2em;
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.student:before {
+  background: none;
+  border: 4px solid #fff;
+  content: "";
+  display: block;
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+}
+
+.student h3,
+.student p {
+  color: #fff;
+  text-align: center;
+}
+/******** STUDENT LIST VIEW SLUT ********/
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/******** STUDENT EXPAND VIEW ********/
+#student-info {
+  display: none;
+}
+/******** STUDENT EXPAND VIEW SLUT ********/
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/******** FOOTER ********/
+footer {
+  margin-top: 30px;
+  width: 100vw;
+  height: 70px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+footer p {
+  font-size: 1.25rem;
+  font-family: cormorant-garamond, serif;
+  font-weight: 700;
+  color: #7a645a;
+  text-transform: uppercase;
+}
+/******** FOOTER SLUT ********/
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/******** MEDIA QUERIES ********/
+@media only screen and (min-width: 800px) {
+  #all-students {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    padding: 0 15px;
+  }
+}

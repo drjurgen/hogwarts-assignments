@@ -72,10 +72,13 @@ a {
 /*  */
 /******** HEADER + NAV ********/
 header {
+  position: fixed;
+  top: 0;
   width: 100vw;
   height: 80px;
   background-color: #fff;
   display: flex;
+  z-index: 10;
 }
 
 nav {
@@ -96,8 +99,6 @@ nav a {
 }
 
 nav a:hover {
-  font-family: cormorant-garamond, serif;
-  font-size: 1.37rem;
   color: #64524a;
 }
 
@@ -115,11 +116,21 @@ nav a:hover {
   text-transform: uppercase;
   cursor: pointer;
   position: relative;
+  width: 200px;
+}
+
+.filter-dropdown-container {
+  margin-right: 40px;
+}
+
+.sort-dropdown-container {
+  margin-right: 40px;
 }
 
 .filter-dropdown,
 .sort-dropdown {
   padding-top: 20px;
+  width: 100%;
   display: none;
   flex-direction: column;
   transition: 0.3s all ease-in;
@@ -131,12 +142,12 @@ nav a:hover {
   z-index: 0;
   position: absolute;
   top: 10px;
-  left: -38px;
+  left: 0;
 }
 
 .filter-dropdown button,
 .sort-dropdown button {
-  width: 140px;
+  width: 100%;
   height: 40px;
   border: none;
   background-color: #fff;
@@ -147,7 +158,12 @@ nav a:hover {
   font-style: normal;
   color: #7a645a;
   text-transform: uppercase;
-  transition: 0.3s all ease-in;
+  transition: 0.2s all ease-in;
+}
+
+.filter-dropdown button:focus,
+.sort-dropdown button:focus {
+  outline: none;
 }
 
 .filter-dropdown button:hover,
@@ -169,10 +185,32 @@ nav a:hover {
   transition: 0.3s all ease-in;
 }
 
-.search-container #search-input:hover,
 .search-container #search-input:focus {
-  width: 220px;
   outline: none;
+}
+
+.filter-dropdown .selected,
+.sort-dropdown .selected {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: scale(0.5);
 }
 /******** HEADER + NAV SLUT ********/
 /*  */
@@ -192,6 +230,7 @@ nav a:hover {
 /*  */
 /******** STUDENT LIST VIEW ********/
 main {
+  margin-top: 80px;
   width: 100vw;
   min-height: 100vh;
 }
@@ -332,8 +371,15 @@ footer p {
 /*  */
 /******** MEDIA QUERIES ********/
 @media only screen and (min-width: 800px) {
+  nav {
+    padding: 0 15px;
+    width: 1200px;
+    margin: 0 auto;
+    justify-content: space-between;
+  }
+
   #all-students {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
     padding: 0 15px;
   }
 }

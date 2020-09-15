@@ -14,21 +14,24 @@
 
         <div class="nav-container">
           <div class="filter-dropdown-container">
-            <p>Filter by</p>
+            <p>Filter by <strong class=""></strong></p>
             <div class="filter-dropdown">
-              <button data-filter="house">House</button>
-              <button data-filter="rank">Rank</button>
-              <button data-filter="expelled">Expelled</button>
+              <button data-filter="all" class="selected">All</button>
+              <button data-filter="Hufflepuff">Hufflepuff</button>
+              <button data-filter="Gryffindor">Gryffindor</button>
+              <button data-filter="Ravenclaw">Ravenclaw</button>
+              <button data-filter="Slytherin">Slytherin</button>
+              <!-- <button data-filter="Rank">Rank</button> -->
+              <!-- <button data-filter="Expelled">Expelled</button> -->
             </div>
           </div>
 
           <div class="sort-dropdown-container">
-            <p>Sort by</p>
+            <p>Sort by <strong class=""></strong></p>
             <div class="sort-dropdown">
-              <button data-sort="firstname">First name</button>
-              <button data-sort="lastname">Last name</button>
-              <button data-sort="house">House</button>
-              <button data-sort="gender">Gender</button>
+              <button data-sort-direction="asc" data-sort="firstName">First name</button>
+              <button data-sort-direction="asc" data-sort="lastName">Last name</button>
+              <button data-sort-direction="asc" data-sort="house">House</button>
             </div>
           </div>
 
@@ -45,28 +48,28 @@
           <h1>Hogwarts Students</h1>
           <div class="hogwarts-info">
             <div class="col">
-              <p>Students in Gryffindor: ??</p>
-              <p>Students in Slytherin: ??</p>
-              <p>Students in total: ??</p>
+              <p class="students-gryffindor">Students in Gryffindor: ??</p>
+              <p class="students-slytherin">Students in Slytherin: ??</p>
+              <p class="students-total">Students in total: ??</p>
             </div>
             <div class="col">
-              <p>Students in Hufflepuff: ??</p>
-              <p>Students in Ravenclaw: ??</p>
-              <p>Students expelled: ??</p>
+              <p class="students-hufflepuff">Students in Hufflepuff: ??</p>
+              <p class="students-ravenclaw">Students in Ravenclaw: ??</p>
+              <p class="students-expelled">Students expelled: ??</p>
             </div>
           </div>
         </div>
       </div>
 
-      <section id="all-students">
-        <template id="student-template">
-          <article class="student">
-            <img src="https://pbs.twimg.com/profile_images/740272510420258817/sd2e6kJy_400x400.jpg" alt="student" />
-            <h3>Random name here</h3>
-            <p>Random house here</p>
-          </article>
-        </template>
-      </section>
+      <section id="all-students"></section>
+
+      <template id="student-template">
+        <article class="student">
+          <img src="https://pbs.twimg.com/profile_images/740272510420258817/sd2e6kJy_400x400.jpg" alt="student" />
+          <h3>Random name here</h3>
+          <p>Random house here</p>
+        </article>
+      </template>
 
       <section id="student-info">
         <div class="info-container">

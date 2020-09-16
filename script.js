@@ -21,6 +21,13 @@ let currentFilter = "all"; // Default current filter
 let currentSort; // Global variable for current sorting
 let sortDirection; // Global variable for current sort direction
 
+let prefects = {
+  Gryffindor: [],
+  Hufflepuff: [],
+  Ravenclaw: [],
+  Slytherin: [],
+};
+
 function start() {
   console.log("ready");
 
@@ -217,9 +224,9 @@ function sortList(currentList) {
   let sortedList;
 
   currentList.sort(sortByProperty);
+  console.log(currentSort);
 
   function sortByProperty(a, b) {
-    console.log(currentSort);
     if (sortDirection === "asc") {
       if (a[currentSort] < b[currentSort]) {
         return -1;
@@ -269,12 +276,9 @@ function displayStudent(student) {
   validateName(clone, student);
 
   clone.querySelector(".student").addEventListener("click", () => {
-    getStudentDetails();
+    displayStudentModal(student);
   });
 
-  function getStudentDetails() {
-    displayStudentModal(student);
-  }
   studentContainer.appendChild(clone);
 }
 
@@ -295,12 +299,20 @@ function validateName(clone, student) {
   }
 }
 
+// Show modal for clicked student
 function displayStudentModal(student) {
+  document.querySelector("#student-modal").innerHTML = "";
+
+  let ModalContainer = document.querySelector("#student-modal");
+  let ModalTemplate = document.querySelector("#modal-template");
+
+  let clone = ModalTemplate.cloneNode(true).content;
+
   const modal = document.querySelector("#student-modal");
-  const modalFullName = document.querySelector(".student-fullname");
-  const modalCredentials = document.querySelector(".student-credentials");
-  const modalPhoto = document.querySelector(".student-modal-photo");
-  const modalCrest = document.querySelector(".house-crest img");
+  const modalFullName = clone.querySelector(".student-fullname");
+  const modalCredentials = clone.querySelector(".student-credentials");
+  const modalPhoto = clone.querySelector(".student-modal-photo");
+  const modalCrest = clone.querySelector(".house-crest img");
 
   modal.style.display = "flex"; // Display the modal
   modalFullName.textContent = student.firstName; // Display student first name
@@ -330,14 +342,93 @@ function displayStudentModal(student) {
     modalCredentials.querySelector("p:nth-child(4)").textContent = "";
   }
 
-  modalPhoto.src = `images/${student.photo}`;
+  if (student.isPrefect === true) {
+    clone.querySelector(".prefect").textContent = "Revoke prefect";
+    modalCredentials.querySelector("p:nth-child(5)").textContent = `Prefect status: ${student.firstName} is prefect!`;
+  } else {
+    modalCredentials.querySelector("p:nth-child(5)").textContent = `Prefect status: ${student.firstName} is not prefect!`;
+    clone.querySelector(".prefect").textContent = "Prefect student";
+  }
+
+  modalPhoto.src = `images/${student.photo}`; // Display student photo
   modalPhoto.alt = student.firstName;
 
-  modalCrest.src = `images/${student.house}.png`;
+  modalCrest.src = `images/${student.house}.png`; // Display student house crest
   modalCrest.alt = `images/${student.house}.png`;
 
-  document.querySelector(".close-info").addEventListener("click", () => {
+  clone.querySelector(".close-info").addEventListener("click", () => {
     modal.style.display = "none";
   });
-  console.log(student);
+
+  clone.querySelector(".prefect").addEventListener("click", prefectClick);
+  function prefectClick() {
+    checkPrefectStatus(student);
+  }
+
+  ModalContainer.appendChild(clone);
+}
+
+function checkPrefectStatus(student) {
+  const currentHouse = student.house;
+
+  if (student.isPrefect === false && prefects[currentHouse].includes(student) === false && prefects[currentHouse].length < 2) {
+    addPrefect(student, currentHouse);
+  } else if (student.isPrefect === true && prefects[currentHouse].includes(student) === true) {
+    revokePrefect(student, currentHouse);
+  } else {
+    decidePrefect(student, currentHouse);
+  }
+}
+
+function decidePrefect(student, currentHouse) {
+  document.querySelector(".prefect-container").classList.remove("hide");
+  document.querySelector(".student-info").classList.add("hide");
+  document.querySelector(".student-actions").classList.add("hide");
+  document.querySelector(".prefect-container p").textContent = `Two prefects already exist in ${currentHouse}`;
+
+  document.querySelector("[data-prefect]:first-child").textContent = `Remove ${prefects[currentHouse][0].firstName}`;
+  document.querySelector("[data-prefect]:nth-child(2)").textContent = `Remove ${prefects[currentHouse][1].firstName}`;
+  document.querySelector("[data-prefect]:nth-child(3)").textContent = `Cancel`;
+
+  document.querySelectorAll("[data-prefect]").forEach((button) => {
+    button.addEventListener("click", clickDecidePrefect);
+  });
+
+  function clickDecidePrefect() {
+    const selectedDecision = this.dataset.prefect;
+    console.log(selectedDecision);
+    if (selectedDecision === "0" || selectedDecision === "1") {
+      removePrefect(student, currentHouse, selectedDecision);
+    } else {
+      closePrefect();
+    }
+  }
+  console.log(prefects);
+}
+
+function addPrefect(student, currentHouse) {
+  student.isPrefect = true;
+  prefects[currentHouse].push(student);
+  console.log(prefects);
+  displayStudentModal(student);
+}
+
+function revokePrefect(student, currentHouse) {
+  console.log("revoke");
+  student.isPrefect = false;
+  prefects[currentHouse].splice(prefects[currentHouse].indexOf(student), 1);
+  displayStudentModal(student);
+}
+
+function removePrefect(student, currentHouse, selectedDecision) {
+  prefects[currentHouse][selectedDecision].isPrefect = false;
+  prefects[currentHouse].splice(selectedDecision, 1, student);
+  addPrefect(student, currentHouse);
+  closePrefect();
+}
+
+function closePrefect() {
+  document.querySelector(".prefect-container").classList.add("hide");
+  document.querySelector(".student-info").classList.remove("hide");
+  document.querySelector(".student-actions").classList.remove("hide");
 }

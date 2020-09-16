@@ -79,7 +79,9 @@
         </article>
       </template>
 
-      <section id="student-modal">
+      <section id="student-modal"></section>
+
+      <template id="modal-template">
         <div class="info-container">
           <div class="col">
             <img alt="student photo here" class="student-modal-photo" />
@@ -92,8 +94,8 @@
                 <p>Middle name:</p>
                 <p>Nick name:</p>
                 <p>Last name:</p>
-                <p>Is student prefect: ??</p>
-                <p>Is student member of inq squad: ??</p>
+                <p>Is student prefect?</p>
+                <p>Is student member of inq squad?</p>
               </div>
 
               <div class="house-crest">
@@ -102,14 +104,23 @@
             </div>
 
             <div class="student-actions">
-              <button>Expel student</button>
-              <button>Prefect student</button>
-              <button>Add inquisitorial</button>
+              <button class="expel">Expel student</button>
+              <button class="prefect">Prefect student</button>
+              <button class="inquisitorial">Add inquisitorial</button>
+            </div>
+
+            <div class="prefect-container hide">
+              <p>Two prefects already exist in [house here]</p>
+              <div class="prefect-actions">
+                <button data-prefect="0">xdd</button>
+                <button data-prefect="1">xddd</button>
+                <button data-prefect="cancel">xddd</button>
+              </div>
             </div>
           </div>
           <button class="close-info">x</button>
         </div>
-      </section>
+      </template>
     </main>
 
     <footer>

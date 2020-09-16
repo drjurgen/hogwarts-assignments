@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>11C.03.06 - Design for Hogwarts Student List</title>
+    <title>11C.04.04 - Hacked Hogwarts Student List</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://use.typekit.net/jke5vgr.css" />
   </head>
@@ -14,7 +14,11 @@
 
         <div class="nav-container">
           <div class="filter-dropdown-container">
-            <p>Filter by <strong class=""></strong></p>
+            <div class="filter-heading">
+              <p>Filter by</p>
+              <i class="arrow down"></i>
+            </div>
+
             <div class="filter-dropdown">
               <button data-filter="all" class="selected">All</button>
               <button data-filter="Hufflepuff">Hufflepuff</button>
@@ -27,7 +31,11 @@
           </div>
 
           <div class="sort-dropdown-container">
-            <p>Sort by <strong class=""></strong></p>
+            <div class="sort-heading">
+              <p>Sort by</p>
+              <i class="arrow down"></i>
+            </div>
+
             <div class="sort-dropdown">
               <button data-sort-direction="asc" data-sort="firstName">First name</button>
               <button data-sort-direction="asc" data-sort="lastName">Last name</button>
@@ -71,20 +79,26 @@
         </article>
       </template>
 
-      <section id="student-info">
+      <section id="student-modal">
         <div class="info-container">
-          <div class="col">student img here</div>
           <div class="col">
-            <h1>student name goes here</h1>
-            <div class="student-credentials">
-              <p>First name: ??</p>
-              <p>Middle name: ??</p>
-              <p>Nick name: ??</p>
-              <p>Last name: ??</p>
-            </div>
+            <img alt="student photo here" class="student-modal-photo" />
+          </div>
+          <div class="col">
+            <h1 class="student-fullname">student name goes here</h1>
+            <div class="student-info">
+              <div class="student-credentials">
+                <p>First name:</p>
+                <p>Middle name:</p>
+                <p>Nick name:</p>
+                <p>Last name:</p>
+                <p>Is student prefect: ??</p>
+                <p>Is student member of inq squad: ??</p>
+              </div>
 
-            <div class="house-crest">
-              <img alt="house crest img goes here" />
+              <div class="house-crest">
+                <img alt="house crest img goes here" />
+              </div>
             </div>
 
             <div class="student-actions">
@@ -93,8 +107,8 @@
               <button>Add inquisitorial</button>
             </div>
           </div>
+          <button class="close-info">x</button>
         </div>
-        <button>x</button>
       </section>
     </main>
 

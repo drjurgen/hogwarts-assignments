@@ -17,9 +17,9 @@ const Student = {
   isMemberOfInqSquard: false,
 };
 
-let currentFilter = "all";
-let currentSort;
-let sortDirection;
+let currentFilter = "all"; // Default current filter
+let currentSort; // Global variable for current sorting
+let sortDirection; // Global variable for current sort direction
 
 function start() {
   console.log("ready");
@@ -138,6 +138,7 @@ function selectFilter() {
   setFilter(clicledFilter);
 }
 
+// Set the currentFilter to the clicked filter
 function setFilter(clickedFilter) {
   document.querySelectorAll(".filter-dropdown button").forEach((knap) => {
     knap.classList.remove("selected");
@@ -146,12 +147,14 @@ function setFilter(clickedFilter) {
 
   currentFilter = clickedFilter.dataset.filter;
 
-  document.querySelector(".filter-dropdown-container p").textContent = `Filter by: ${currentFilter}`;
+  document.querySelector(".filter-heading p").textContent = `Filter by: ${currentFilter}`;
+  document.querySelector(".filter-heading i").classList = "";
 
   console.log(currentFilter);
   buildList();
 }
 
+// Filter the list by currentFilter
 function filterList(allStudents) {
   const list = allStudents.filter((student) => student.house === currentFilter);
   if (currentFilter === "all") {
@@ -161,6 +164,7 @@ function filterList(allStudents) {
   }
 }
 
+// Get selected sort option and send it to setSort function
 function selectSort() {
   const clickedSort = this;
   const direction = this.dataset.sortDirection;
@@ -170,30 +174,32 @@ function selectSort() {
   changeSortDirection(clickedSortButton, direction);
 }
 
+// Change sort direction accordingly to clicked sorting option
 function changeSortDirection(clickedSortButton, direction) {
   document.querySelectorAll(".sort-dropdown button").forEach((knap) => {
     knap.dataset.sortDirection = "asc";
   });
 
-  document.querySelector(".sort-dropdown-container p").textContent = "";
+  document.querySelector(".sort-heading p").textContent = "";
 
   if (currentSort === "firstName") {
-    document.querySelector(".sort-dropdown-container p").textContent = `Sort by: First Name`;
+    document.querySelector(".sort-heading p").textContent = `Sort by: First Name`;
   } else if (currentSort === "lastName") {
-    document.querySelector(".sort-dropdown-container p").textContent = `Sort by: Last Name`;
+    document.querySelector(".sort-heading p").textContent = `Sort by: Last Name`;
   } else {
-    document.querySelector(".sort-dropdown-container p").textContent = `Sort by: ${currentSort}`;
+    document.querySelector(".sort-heading p").textContent = `Sort by: ${currentSort}`;
   }
 
   if (direction === "asc") {
     clickedSortButton.dataset.sortDirection = "desc";
-    document.querySelector(".sort-dropdown-container p").textContent += " 🔼";
+    document.querySelector(".sort-heading i").classList = "arrow up";
   } else {
     clickedSortButton.dataset.sortDirection = "asc";
-    document.querySelector(".sort-dropdown-container p").textContent += " 🔽";
+    document.querySelector(".sort-heading i").classList = "arrow down";
   }
 }
 
+// Display selected sorting method in dropdown
 function setSort(clickedSort, direction) {
   document.querySelectorAll(".sort-dropdown button").forEach((knap) => {
     knap.classList.remove("selected");
@@ -206,6 +212,7 @@ function setSort(clickedSort, direction) {
   buildList();
 }
 
+// Sort students with currentSort method
 function sortList(currentList) {
   let sortedList;
 
@@ -230,6 +237,7 @@ function sortList(currentList) {
   return sortedList;
 }
 
+// Make the student array with filter and sorting in mind
 function buildList() {
   const currentList = filterList(allStudents);
   sortList(currentList);
@@ -255,6 +263,23 @@ function displayStudent(student) {
   let studentTemplate = document.querySelector("#student-template");
 
   let clone = studentTemplate.cloneNode(true).content;
+  clone.querySelector("p").textContent = student.house;
+  clone.querySelector("img").src = `images/${student.photo}`;
+  clone.querySelector("img").alt = student.firstName;
+  validateName(clone, student);
+
+  clone.querySelector(".student").addEventListener("click", () => {
+    getStudentDetails();
+  });
+
+  function getStudentDetails() {
+    displayStudentModal(student);
+  }
+  studentContainer.appendChild(clone);
+}
+
+// Checks if the student has any middlename, nickname or lastname and displays their full name accordingly
+function validateName(clone, student) {
   clone.querySelector("h3").textContent = `${student.firstName}`;
 
   if (student.middleName !== null) {
@@ -268,13 +293,51 @@ function displayStudent(student) {
   if (student.lastName !== null) {
     clone.querySelector("h3").textContent += ` ${student.lastName}`;
   }
+}
 
-  clone.querySelector("p").textContent = student.house;
-  clone.querySelector("img").src = `images/${student.photo}`;
-  clone.querySelector("img").alt = student.firstName;
+function displayStudentModal(student) {
+  const modal = document.querySelector("#student-modal");
+  const modalFullName = document.querySelector(".student-fullname");
+  const modalCredentials = document.querySelector(".student-credentials");
+  const modalPhoto = document.querySelector(".student-modal-photo");
+  const modalCrest = document.querySelector(".house-crest img");
 
-  clone.querySelector(".student").addEventListener("click", () => {
-    console.log(student);
+  modal.style.display = "flex"; // Display the modal
+  modalFullName.textContent = student.firstName; // Display student first name
+  modalCredentials.querySelector("p").textContent = `First name: ${student.firstName}`;
+
+  // Display student middel name
+  if (student.middleName !== null) {
+    modalFullName.textContent += `  ${student.middleName}`;
+    modalCredentials.querySelector("p:nth-child(2)").textContent = `Middle name: ${student.middleName}`;
+  } else {
+    modalCredentials.querySelector("p:nth-child(2)").textContent = "";
+  }
+
+  // Display student nick name
+  if (student.nickName !== null) {
+    modalFullName.textContent += ` "${student.nickName}"`;
+    modalCredentials.querySelector("p:nth-child(3)").textContent = `Nick name: ${student.nickName}`;
+  } else {
+    modalCredentials.querySelector("p:nth-child(3)").textContent = "";
+  }
+
+  // Display student last name
+  if (student.lastName !== null) {
+    modalFullName.textContent += ` ${student.lastName}`;
+    modalCredentials.querySelector("p:nth-child(4)").textContent = `Last name: ${student.lastName}`;
+  } else {
+    modalCredentials.querySelector("p:nth-child(4)").textContent = "";
+  }
+
+  modalPhoto.src = `images/${student.photo}`;
+  modalPhoto.alt = student.firstName;
+
+  modalCrest.src = `images/${student.house}.png`;
+  modalCrest.alt = `images/${student.house}.png`;
+
+  document.querySelector(".close-info").addEventListener("click", () => {
+    modal.style.display = "none";
   });
-  studentContainer.appendChild(clone);
+  console.log(student);
 }

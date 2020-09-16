@@ -373,7 +373,7 @@ function checkPrefectStatus(student) {
 
   if (student.isPrefect === false && prefects[currentHouse].includes(student) === false && prefects[currentHouse].length < 2) {
     addPrefect(student, currentHouse);
-  } else if (student.isPrefect === true && prefects[currentHouse].includes(student) === true) {
+  } else if (student.isPrefect === true && prefects[currentHouse].includes(student) === true && prefects[currentHouse].length >= 2) {
     revokePrefect(student, currentHouse);
   } else {
     decidePrefect(student, currentHouse);
@@ -422,7 +422,7 @@ function revokePrefect(student, currentHouse) {
 
 function removePrefect(student, currentHouse, selectedDecision) {
   prefects[currentHouse][selectedDecision].isPrefect = false;
-  prefects[currentHouse].splice(selectedDecision, 1, student);
+  prefects[currentHouse].splice(selectedDecision, 1);
   addPrefect(student, currentHouse);
   closePrefect();
 }

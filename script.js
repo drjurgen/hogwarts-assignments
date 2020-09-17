@@ -163,10 +163,13 @@ function setFilter(clickedFilter) {
 
 // Filter the list by currentFilter
 function filterList(allStudents) {
-  const list = allStudents.filter((student) => student.house === currentFilter);
   if (currentFilter === "all") {
     return allStudents;
+  } else if (currentFilter === "prefect") {
+    const list = allStudents.filter((student) => student.isPrefect === true);
+    return list;
   } else {
+    const list = allStudents.filter((student) => student.house === currentFilter);
     return list;
   }
 }

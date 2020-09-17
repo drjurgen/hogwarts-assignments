@@ -17,21 +17,18 @@ const Student = {
   isMemberOfInqSquad: false,
 };
 
-let familyBlood = {};
-
 let currentFilter = "all"; // Default current filter
 let currentSort; // Global variable for current sorting
 let sortDirection; // Global variable for current sort direction
-let searchTrigger = 0;
-
+let familyBlood = {}; // Global variable to detemine each students blood type
+let expelledStudents = []; // Global array for expelled students
+let inqSquad = []; // Global array for inq squad members
 let prefects = {
   Gryffindor: [],
   Hufflepuff: [],
   Ravenclaw: [],
   Slytherin: [],
-};
-
-let inqSquad = [];
+}; // Global object with house arrays for prefects
 
 function start() {
   console.log("ready");
@@ -40,7 +37,7 @@ function start() {
     knap.addEventListener("click", selectFilter);
   });
 
-  document.querySelectorAll("sort-dropdown button").forEach((knap) => {
+  document.querySelectorAll(".sort-dropdown button").forEach((knap) => {
     knap.addEventListener("click", selectSort);
   });
 
@@ -153,7 +150,7 @@ function prepareFamilyBlood(jsonData) {
     if (familyBlood.pure.includes(student.lastName) === true && familyBlood.half.includes(student.lastName) === false) {
       student.bloodType = "Pure blood";
     } else if (familyBlood.pure.includes(student.lastName) === true && familyBlood.half.includes(student.lastName) === true) {
-      student.bloodType = "Pure blood v2";
+      student.bloodType = "Pure blood";
     } else if (familyBlood.pure.includes(student.lastName) === false && familyBlood.half.includes(student.lastName) === true) {
       student.bloodType = "Half blood";
     } else {
@@ -200,6 +197,9 @@ function filterList(allStudents) {
     return allStudents;
   } else if (currentFilter === "prefect") {
     const list = allStudents.filter((student) => student.isPrefect === true);
+    return list;
+  } else if (currentFilter === "expelled") {
+    const list = expelledStudents;
     return list;
   } else {
     const list = allStudents.filter((student) => student.house === currentFilter);
@@ -319,6 +319,7 @@ function displayList(students) {
   document.querySelector(".students-slytherin").textContent = "Students in Slytherin: " + allStudents.filter((student) => student.house === "Slytherin").length;
 
   document.querySelector(".students-total").textContent = "Students in total: " + allStudents.length;
+  document.querySelector(".students-expelled").textContent = "Students expelled: " + expelledStudents.length;
 }
 
 // Display each student
@@ -433,14 +434,27 @@ function displayStudentModal(student) {
     modal.style.display = "none";
   });
 
-  clone.querySelector(".prefect").addEventListener("click", prefectClick);
-  function prefectClick() {
-    checkPrefectStatus(student);
-  }
+  if (allStudents.includes(student)) {
+    clone.querySelector(".prefect").addEventListener("click", prefectClick);
+    function prefectClick() {
+      checkPrefectStatus(student);
+    }
 
-  clone.querySelector(".inquisitorial").addEventListener("click", inquisitorialClick);
-  function inquisitorialClick() {
-    toggleInquisitorial(student);
+    clone.querySelector(".inquisitorial").addEventListener("click", inquisitorialClick);
+    function inquisitorialClick() {
+      toggleInquisitorial(student);
+    }
+
+    clone.querySelector(".expel").addEventListener("click", expelClick);
+    function expelClick() {
+      modal.style.display = "none";
+      expelStudent(student);
+    }
+  } else {
+    clone.querySelectorAll(".student-actions button").forEach((button) => {
+      button.classList.add("disabled");
+      button.disabled = true;
+    });
   }
 
   ModalContainer.appendChild(clone);
@@ -521,4 +535,15 @@ function toggleInquisitorial(student) {
     console.log(`${student.firstName} is not pure blood!`);
   }
   displayStudentModal(student);
+}
+
+function expelStudent(student) {
+  console.log(`${student.firstName} is now expelled`);
+
+  expelledStudents.push(student);
+  student.isMemberOfInqSquad = false;
+  student.isPrefect = false;
+  allStudents.splice(allStudents.indexOf(student), 1);
+
+  displayList(allStudents);
 }

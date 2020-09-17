@@ -41,6 +41,8 @@
               <button data-sort-direction="asc" data-sort="firstName">First name</button>
               <button data-sort-direction="asc" data-sort="lastName">Last name</button>
               <button data-sort-direction="asc" data-sort="house">House</button>
+              <button data-sort-direction="asc" data-sort="isPrefect">Prefects</button>
+              <button data-sort-direction="asc" data-sort="isMemberOfInqSquad">Inquisitorial squad</button>
             </div>
           </div>
 
@@ -95,8 +97,10 @@
                 <p>Middle name:</p>
                 <p>Nick name:</p>
                 <p>Last name:</p>
+                <p>Blood status</p>
                 <p>Is student prefect?</p>
-                <p>Is student member of inq squad?</p>
+                <p>Inquisitorial squad status:</p>
+                <p class="hide">Only pure-bloods can join the squad!</p>
               </div>
 
               <div class="house-crest">
@@ -107,15 +111,15 @@
             <div class="student-actions">
               <button class="expel">Expel student</button>
               <button class="prefect">Prefect student</button>
-              <button class="inquisitorial">Add inquisitorial</button>
+              <button class="inquisitorial">Add to inquisitorial squad</button>
             </div>
 
             <div class="prefect-container hide">
               <p>Two prefects already exist in [house here]</p>
               <div class="prefect-actions">
-                <button data-prefect="0">xdd</button>
-                <button data-prefect="1">xddd</button>
-                <button data-prefect="cancel">xddd</button>
+                <button data-prefect="0"></button>
+                <button data-prefect="1"></button>
+                <button data-prefect="cancel"></button>
               </div>
             </div>
           </div>

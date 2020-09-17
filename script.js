@@ -14,8 +14,10 @@ const Student = {
   photo: "",
   bloodType: "",
   isPrefect: false,
-  isMemberOfInqSquard: false,
+  isMemberOfInqSquad: false,
 };
+
+let familyBlood = {};
 
 let currentFilter = "all"; // Default current filter
 let currentSort; // Global variable for current sorting
@@ -27,6 +29,8 @@ let prefects = {
   Ravenclaw: [],
   Slytherin: [],
 };
+
+let inqSquad = [];
 
 function start() {
   console.log("ready");
@@ -40,6 +44,7 @@ function start() {
   });
 
   loadJSON("https://petlatkea.dk/2020/hogwarts/students.json", prepareObjects);
+  loadJSON("https://petlatkea.dk/2020/hogwarts/families.json", prepareFamilyBlood);
 }
 
 // Load JSON-data with use of callback function
@@ -139,6 +144,23 @@ function prepareObjects(jsonData) {
   displayList(allStudents);
 }
 
+function prepareFamilyBlood(jsonData) {
+  familyBlood = jsonData;
+  console.log(familyBlood);
+
+  allStudents.forEach((student) => {
+    if (familyBlood.pure.includes(student.lastName) === true && familyBlood.half.includes(student.lastName) === false) {
+      student.bloodType = "Pure blood";
+    } else if (familyBlood.pure.includes(student.lastName) === true && familyBlood.half.includes(student.lastName) === true) {
+      student.bloodType = "Pure blood v2";
+    } else if (familyBlood.pure.includes(student.lastName) === false && familyBlood.half.includes(student.lastName) === true) {
+      student.bloodType = "Half blood";
+    } else {
+      student.bloodType = "Muggle blood";
+    }
+  });
+}
+
 // Get selected filter option and send it to setFilter function
 function selectFilter() {
   const clicledFilter = this;
@@ -196,6 +218,10 @@ function changeSortDirection(clickedSortButton, direction) {
     document.querySelector(".sort-heading p").textContent = `Sort by: First Name`;
   } else if (currentSort === "lastName") {
     document.querySelector(".sort-heading p").textContent = `Sort by: Last Name`;
+  } else if (currentSort === "isMemberOfInqSquad") {
+    document.querySelector(".sort-heading p").textContent = `Sort by: Inquisitorial`;
+  } else if (currentSort === "isPrefect") {
+    document.querySelector(".sort-heading p").textContent = `Sort by: Prefects`;
   } else {
     document.querySelector(".sort-heading p").textContent = `Sort by: ${currentSort}`;
   }
@@ -345,12 +371,22 @@ function displayStudentModal(student) {
     modalCredentials.querySelector("p:nth-child(4)").textContent = "";
   }
 
+  modalCredentials.querySelector("p:nth-child(5)").textContent = `Blood status: ${student.bloodType}`;
+
   if (student.isPrefect === true) {
     clone.querySelector(".prefect").textContent = "Revoke prefect";
-    modalCredentials.querySelector("p:nth-child(5)").textContent = `Prefect status: ${student.firstName} is prefect!`;
+    modalCredentials.querySelector("p:nth-child(6)").textContent = `Prefect status: ${student.firstName} is prefect!`;
   } else {
-    modalCredentials.querySelector("p:nth-child(5)").textContent = `Prefect status: ${student.firstName} is not prefect!`;
+    modalCredentials.querySelector("p:nth-child(6)").textContent = `Prefect status: ${student.firstName} is not prefect!`;
     clone.querySelector(".prefect").textContent = "Prefect student";
+  }
+
+  if (student.isMemberOfInqSquad === true) {
+    clone.querySelector(".inquisitorial").textContent = "Revoke inquisitorial membership";
+    modalCredentials.querySelector("p:nth-child(7)").textContent = `Inquisitorial squad status: Member!`;
+  } else {
+    clone.querySelector(".inquisitorial").textContent = "Add to inquisitorial squad";
+    modalCredentials.querySelector("p:nth-child(7)").textContent = `Inquisitorial squad status: Not a member!`;
   }
 
   modalPhoto.src = `images/${student.photo}`; // Display student photo
@@ -368,6 +404,15 @@ function displayStudentModal(student) {
     checkPrefectStatus(student);
   }
 
+  clone.querySelector(".inquisitorial").addEventListener("click", inquisitorialClick);
+  function inquisitorialClick() {
+    if (student.bloodType !== "Pure blood") {
+      modalCredentials.querySelector("p:nth-child(8)").classList.remove("hide");
+    } else {
+      toggleInquisitorial(student);
+    }
+  }
+
   ModalContainer.appendChild(clone);
 }
 
@@ -377,6 +422,8 @@ function checkPrefectStatus(student) {
   if (student.isPrefect === false && prefects[currentHouse].includes(student) === false && prefects[currentHouse].length < 2) {
     addPrefect(student, currentHouse);
   } else if (student.isPrefect === true && prefects[currentHouse].includes(student) === true && prefects[currentHouse].length >= 2) {
+    revokePrefect(student, currentHouse);
+  } else if (student.isPrefect === true && prefects[currentHouse].includes(student) === true && prefects[currentHouse].length < 2) {
     revokePrefect(student, currentHouse);
   } else {
     decidePrefect(student, currentHouse);
@@ -434,4 +481,14 @@ function closePrefect() {
   document.querySelector(".prefect-container").classList.add("hide");
   document.querySelector(".student-info").classList.remove("hide");
   document.querySelector(".student-actions").classList.remove("hide");
+}
+
+function toggleInquisitorial(student) {
+  if (student.bloodType === "Pure blood") {
+    student.isMemberOfInqSquad = !student.isMemberOfInqSquad;
+    console.log(student);
+  } else {
+    console.log(`${student.firstName} is not pure blood!`);
+  }
+  displayStudentModal(student);
 }

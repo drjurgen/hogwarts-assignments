@@ -22,6 +22,7 @@ let familyBlood = {};
 let currentFilter = "all"; // Default current filter
 let currentSort; // Global variable for current sorting
 let sortDirection; // Global variable for current sort direction
+let searchTrigger = 0;
 
 let prefects = {
   Gryffindor: [],
@@ -39,9 +40,11 @@ function start() {
     knap.addEventListener("click", selectFilter);
   });
 
-  document.querySelectorAll(".sort-dropdown button").forEach((knap) => {
+  document.querySelectorAll("sort-dropdown button").forEach((knap) => {
     knap.addEventListener("click", selectSort);
   });
+
+  document.querySelector("#search-input").addEventListener("input", filterSearch);
 
   loadJSON("https://petlatkea.dk/2020/hogwarts/students.json", prepareObjects);
   loadJSON("https://petlatkea.dk/2020/hogwarts/families.json", prepareFamilyBlood);
@@ -58,8 +61,6 @@ async function loadJSON(url, callback) {
 function prepareObjects(jsonData) {
   console.log(jsonData);
   jsonData.forEach((jsonObject) => {
-    // TODO: Create new object with cleaned data - and store that in the allAnimals array
-
     const fullName = jsonObject.fullname.trim();
 
     let house = jsonObject.house.trim();
@@ -161,6 +162,16 @@ function prepareFamilyBlood(jsonData) {
   });
 }
 
+function filterSearch() {
+  const searchValue = this.value;
+  if (searchValue.length === 0) {
+    currentFilter = "all";
+  } else {
+    currentFilter = searchValue;
+  }
+  console.log(searchValue);
+}
+
 // Get selected filter option and send it to setFilter function
 function selectFilter() {
   const clicledFilter = this;
@@ -194,6 +205,22 @@ function filterList(allStudents) {
     const list = allStudents.filter((student) => student.house === currentFilter);
     return list;
   }
+}
+
+// Search the list by input text
+function searchList(allStudents) {
+  const list = allStudents.filter((student) => {
+    if (
+      student.firstName.toLowerCase().includes(currentFilter) ||
+      student.middleName.toLowerCase().includes(currentFilter) ||
+      student.nickName.toLowerCase().includes(currentFilter) ||
+      student.lastName.toLowerCase().includes(currentFilter)
+    ) {
+      return list;
+    } else {
+      return allStudents;
+    }
+  });
 }
 
 // Get selected sort option and send it to setSort function
@@ -276,6 +303,7 @@ function sortList(currentList) {
 // Make the student array with filter and sorting in mind
 function buildList() {
   const currentList = filterList(allStudents);
+
   sortList(currentList);
   displayList(currentList);
 }
@@ -389,6 +417,12 @@ function displayStudentModal(student) {
     modalCredentials.querySelector("p:nth-child(7)").textContent = `Inquisitorial squad status: Not a member!`;
   }
 
+  if (student.bloodType !== "Pure blood") {
+    clone.querySelector(".inquisitorial").classList.add("disabled");
+    clone.querySelector(".inquisitorial").disabled = true;
+    clone.querySelector(".inquisitorial").textContent = "Only pure-bloods can join the squad!";
+  }
+
   modalPhoto.src = `images/${student.photo}`; // Display student photo
   modalPhoto.alt = student.firstName;
 
@@ -406,11 +440,7 @@ function displayStudentModal(student) {
 
   clone.querySelector(".inquisitorial").addEventListener("click", inquisitorialClick);
   function inquisitorialClick() {
-    if (student.bloodType !== "Pure blood") {
-      modalCredentials.querySelector("p:nth-child(8)").classList.remove("hide");
-    } else {
-      toggleInquisitorial(student);
-    }
+    toggleInquisitorial(student);
   }
 
   ModalContainer.appendChild(clone);

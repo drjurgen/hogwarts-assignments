@@ -592,11 +592,10 @@ function expelStudent(student) {
 
 function hackTheSystem() {
   // General hacking settings
-  const button = this;
-  button.removeEventListener("click", hackTheSystem);
-  button.disabled = true;
-  button.classList.add("disabled");
-  button.textContent = "hacked";
+  document.querySelector("footer button").removeEventListener("click", hackTheSystem);
+  document.querySelector("footer button").disabled = true;
+  document.querySelector("footer button").classList.add("disabled");
+  document.querySelector("footer button").textContent = "hacked";
   console.log("hacked");
   document.querySelector("footer audio").volume = 0.1;
   document.querySelector("footer audio").play();

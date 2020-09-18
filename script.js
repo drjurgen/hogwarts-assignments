@@ -393,6 +393,10 @@ function displayStudentModal(student) {
   const modalCredentials = clone.querySelector(".student-credentials");
   const modalPhoto = clone.querySelector(".student-modal-photo");
   const modalCrest = clone.querySelector(".house-crest img");
+  const modalFrame = clone.querySelector(".info-container");
+
+  modalFrame.style.setProperty("--primary-color", `var(--${student.house.toLowerCase()}-primary)`);
+  modalFrame.style.setProperty("--secondary-color", `var(--${student.house.toLowerCase()}-secondary)`);
 
   modal.style.display = "flex"; // Display the modal
   modalFullName.textContent = student.firstName; // Display student first name

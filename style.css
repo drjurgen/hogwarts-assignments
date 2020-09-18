@@ -6,6 +6,7 @@
 body {
   margin: 0;
   background-color: #f4f4f4;
+  overflow-x: hidden;
 }
 
 img {
@@ -550,6 +551,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 footer p {
@@ -559,6 +561,37 @@ footer p {
   color: #7a645a;
   text-transform: uppercase;
 }
+
+footer button {
+  position: absolute;
+  right: 20px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: #7a645a;
+  font-family: brandon-grotesque, sans-serif;
+  text-transform: uppercase;
+  font-size: 12px;
+  transition: all 0.2 ease-out;
+}
+
+footer button:focus {
+  outline: none;
+}
+
+footer button:hover {
+  transform: scale(1.02);
+}
+
+footer .disabled {
+  color: #333;
+  cursor: default;
+}
+
+footer .disabled:hover {
+  transform: scale(1);
+}
+
 /******** FOOTER SLUT ********/
 /*  */
 /*  */

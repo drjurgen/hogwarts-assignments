@@ -15,6 +15,7 @@ const Student = {
   bloodType: "",
   isPrefect: false,
   isMemberOfInqSquad: false,
+  canBeExpelled: true,
 };
 
 let currentFilter = "all"; // Default current filter
@@ -29,6 +30,7 @@ let prefects = {
   Ravenclaw: [],
   Slytherin: [],
 }; // Global object with house arrays for prefects
+let hasBeenHacked = false; // Global variable used to keep track of hacking status
 
 function start() {
   console.log("ready");
@@ -42,6 +44,8 @@ function start() {
   });
 
   document.querySelector("#search-input").addEventListener("input", filterSearch);
+
+  document.querySelector("footer button").addEventListener("click", hackTheSystem);
 
   loadJSON("https://petlatkea.dk/2020/hogwarts/students.json", prepareObjects);
   loadJSON("https://petlatkea.dk/2020/hogwarts/families.json", prepareFamilyBlood);
@@ -170,17 +174,16 @@ function filterSearch() {
 
 // Search the list by input text
 function searchList(allStudents) {
-  if (currentFilter.length === 0) {
+  if (currentFilter.length === 0 || currentFilter === "" || currentFilter === null) {
     return allStudents;
   } else {
     const list = allStudents.filter((student) => {
-      if (student.firstName.toLowerCase().includes(currentFilter.toLowerCase())) {
-        return true;
-      } else if (student.middleName !== null && student.middleName.toLowerCase().includes(currentFilter.toLowerCase())) {
-        return true;
-      } else if (student.nickName !== null && student.nickName.toLowerCase().includes(currentFilter.toLowerCase())) {
-        return true;
-      } else if (student.lastName !== null && student.lastName.toLowerCase().includes(currentFilter.toLowerCase())) {
+      if (
+        student.firstName.toLowerCase().includes(currentFilter.toLowerCase()) ||
+        (student.middleName !== null && student.middleName.toLowerCase().includes(currentFilter.toLowerCase())) ||
+        (student.nickName !== null && student.nickName.toLowerCase().includes(currentFilter.toLowerCase())) ||
+        (student.lastName !== null && student.lastName.toLowerCase().includes(currentFilter.toLowerCase()))
+      ) {
         return true;
       } else {
         return false;
@@ -215,7 +218,7 @@ function setFilter(clickedFilter) {
 
 // Filter the list by currentFilter
 function filterList(allStudents) {
-  if (currentFilter === "all") {
+  if (currentFilter === "all" || currentFilter.length === 0) {
     return allStudents;
   } else if (currentFilter === "prefect") {
     const list = allStudents.filter((student) => student.isPrefect === true);
@@ -322,7 +325,14 @@ function buildList(searchValue) {
 // Send each student object in the allStudents array to displayStudent function
 function displayList(students) {
   document.querySelector("#all-students").innerHTML = "";
-  students.forEach(displayStudent);
+  if (hasBeenHacked === true) {
+    randomizeBloodType();
+    students.forEach(displayStudent);
+    console.log("hacked");
+  } else {
+    students.forEach(displayStudent);
+    console.log("not hacked yet");
+  }
 
   document.querySelector(".students-gryffindor").textContent = "Students in Gryffindor: " + allStudents.filter((student) => student.house === "Gryffindor").length;
   document.querySelector(".students-hufflepuff").textContent = "Students in Hufflepuff: " + allStudents.filter((student) => student.house === "Hufflepuff").length;
@@ -468,6 +478,13 @@ function displayStudentModal(student) {
     });
   }
 
+  // Hack the system below
+  if (student.canBeExpelled === false) {
+    clone.querySelector(".expel").textContent = `Cannot be expelled!`;
+    clone.querySelector(".expel").classList.add("disabled");
+    clone.querySelector(".expel").disabled = true;
+  }
+
   ModalContainer.appendChild(clone);
 }
 
@@ -539,13 +556,27 @@ function closePrefect() {
 }
 
 function toggleInquisitorial(student) {
-  if (student.bloodType === "Pure blood") {
-    student.isMemberOfInqSquad = !student.isMemberOfInqSquad;
-    console.log(student);
+  if (hasBeenHacked === false) {
+    if (student.bloodType === "Pure blood") {
+      student.isMemberOfInqSquad = !student.isMemberOfInqSquad;
+      console.log(student);
+    } else {
+      console.log(`${student.firstName} is not pure blood!`);
+    }
+    displayStudentModal(student);
   } else {
-    console.log(`${student.firstName} is not pure blood!`);
+    if (student.bloodType === "Pure blood" && student.isMemberOfInqSquad === false) {
+      setTimeout(toggleInquisitorial, 1000, student);
+      student.isMemberOfInqSquad = !student.isMemberOfInqSquad;
+      console.log(student);
+    } else if (student.bloodType === "Pure blood" && student.isMemberOfInqSquad === true) {
+      student.isMemberOfInqSquad = !student.isMemberOfInqSquad;
+      console.log(student);
+    } else {
+      console.log(`${student.firstName} is not pure blood!`);
+    }
+    displayStudentModal(student);
   }
-  displayStudentModal(student);
 }
 
 function expelStudent(student) {
@@ -560,21 +591,46 @@ function expelStudent(student) {
 }
 
 function hackTheSystem() {
-  // inject myself
-  // - create an object - from Student prototype
-  // - push it to allStudents
-  // - add canBeExpelled property to Student prototype
-  // - add sound effect to expel try
-  //
-  // randomize blood-status for pure-bloods
-  // - forEach method for allStudents
-  // - use Math.random to make student.bloodStatus random value
-  // - const values = ["pure", "half", "muggle"]
-  // - student.bloodStatus = values[Math.floor(Math.random() * values.length)]
-  // - check if hasBeenHacked = true everywhere you want mess with the code
-  //
-  // adding members inquisitorial squad will only work for a limited time
-  // - toggleInquisitorial should trigger twice with at timed delay
-  // - global variable called hasBeenHacked = false
-  // - check if hasBeenHacked = true everywhere you want mess with the code
+  // General hacking settings
+  const button = this;
+  button.removeEventListener("click", hackTheSystem);
+  button.disabled = true;
+  button.classList.add("disabled");
+  button.textContent = "hacked";
+  console.log("hacked");
+  document.querySelector("footer audio").volume = 0.1;
+  document.querySelector("footer audio").play();
+
+  // Injecting myself
+  const myself = Object.create(Student);
+  myself.firstName = "Nicolai";
+  myself.middleName = "H.";
+  myself.nickName = null;
+  myself.lastName = "Jørgensen";
+  myself.gender = "Boy";
+  myself.house = "Gryffindor";
+  myself.photo = "unknown.svg";
+  myself.bloodType = "Pure blood";
+  myself.canBeExpelled = false;
+
+  randomizeBloodType(); // Randomize blood-status for pure-bloods
+  hasBeenHacked = true; // Setting global variable up for hacking settings
+
+  // Final injections
+  allStudents.unshift(myself);
+  displayList(allStudents);
+}
+
+function randomizeBloodType() {
+  allStudents.forEach((student) => {
+    if (student.bloodType === "Pure blood" && student.canBeExpelled === true) {
+      const newBloodTypes = ["Pure blood", "Half blood", "Muggle blood"];
+      console.log(student.bloodType);
+      student.bloodType = newBloodTypes[Math.floor(Math.random() * newBloodTypes.length)];
+      console.log(student.bloodType);
+    } else {
+      student.bloodType = "Pure blood";
+      console.log(student.bloodType);
+    }
+  });
 }

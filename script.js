@@ -452,10 +452,6 @@ function displayStudentModal(student) {
   modalCrest.src = `images/${student.house}.png`; // Display student house crest
   modalCrest.alt = `images/${student.house}.png`;
 
-  clone.querySelector(".close-info").addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-
   if (allStudents.includes(student)) {
     clone.querySelector(".prefect").addEventListener("click", prefectClick);
     function prefectClick() {
@@ -469,7 +465,10 @@ function displayStudentModal(student) {
 
     clone.querySelector(".expel").addEventListener("click", expelClick);
     function expelClick() {
-      modal.style.display = "none";
+      document.querySelector(".info-container").classList.add("fade-out");
+      document.querySelector(".info-container").addEventListener("animationend", () => {
+        modal.style.display = "none";
+      });
       expelStudent(student);
     }
   } else {
@@ -487,6 +486,18 @@ function displayStudentModal(student) {
   }
 
   ModalContainer.appendChild(clone);
+
+  document.querySelector(".info-container").classList.add("fade-in");
+  document.querySelector(".info-container").addEventListener("animationend", () => {
+    document.querySelector(".info-container").classList.remove("fade-in");
+  });
+
+  document.querySelector(".close-info").addEventListener("click", () => {
+    document.querySelector(".info-container").classList.add("fade-out");
+    document.querySelector(".info-container").addEventListener("animationend", () => {
+      modal.style.display = "none";
+    });
+  });
 }
 
 function checkPrefectStatus(student) {

@@ -176,18 +176,14 @@ function searchList(allStudents) {
     const list = allStudents.filter((student) => {
       if (student.firstName.toLowerCase().includes(currentFilter.toLowerCase())) {
         return true;
-      }
-
-      if (student.middleName !== null && student.middleName.toLowerCase().includes(currentFilter.toLowerCase())) {
+      } else if (student.middleName !== null && student.middleName.toLowerCase().includes(currentFilter.toLowerCase())) {
         return true;
-      }
-
-      if (student.nickName !== null && student.nickName.toLowerCase().includes(currentFilter.toLowerCase())) {
+      } else if (student.nickName !== null && student.nickName.toLowerCase().includes(currentFilter.toLowerCase())) {
         return true;
-      }
-
-      if (student.lastName !== null && student.lastName.toLowerCase().includes(currentFilter.toLowerCase())) {
+      } else if (student.lastName !== null && student.lastName.toLowerCase().includes(currentFilter.toLowerCase())) {
         return true;
+      } else {
+        return false;
       }
     });
     console.log(list);

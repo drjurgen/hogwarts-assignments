@@ -629,7 +629,7 @@ function hackTheSystem() {
   myself.lastName = "Jørgensen";
   myself.gender = "Boy";
   myself.house = "Gryffindor";
-  myself.photo = "unknown.svg";
+  myself.photo = "jurgen2.png";
   myself.bloodType = "Pure blood";
   myself.canBeExpelled = false;
 

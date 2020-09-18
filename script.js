@@ -142,6 +142,7 @@ function prepareObjects(jsonData) {
   displayList(allStudents);
 }
 
+// Set each students blood type properly according to their parents'
 function prepareFamilyBlood(jsonData) {
   familyBlood = jsonData;
   console.log(familyBlood);
@@ -159,14 +160,39 @@ function prepareFamilyBlood(jsonData) {
   });
 }
 
+// Get the search input from the user and send it to buildList
 function filterSearch() {
   const searchValue = this.value;
-  if (searchValue.length === 0) {
-    currentFilter = "all";
-  } else {
-    currentFilter = searchValue;
-  }
+  currentFilter = searchValue;
   console.log(searchValue);
+  buildList(searchValue);
+}
+
+// Search the list by input text
+function searchList(allStudents) {
+  if (currentFilter.length === 0) {
+    return allStudents;
+  } else {
+    const list = allStudents.filter((student) => {
+      if (student.firstName.toLowerCase().includes(currentFilter.toLowerCase())) {
+        return true;
+      }
+
+      if (student.middleName !== null && student.middleName.toLowerCase().includes(currentFilter.toLowerCase())) {
+        return true;
+      }
+
+      if (student.nickName !== null && student.nickName.toLowerCase().includes(currentFilter.toLowerCase())) {
+        return true;
+      }
+
+      if (student.lastName !== null && student.lastName.toLowerCase().includes(currentFilter.toLowerCase())) {
+        return true;
+      }
+    });
+    console.log(list);
+    return list;
+  }
 }
 
 // Get selected filter option and send it to setFilter function
@@ -205,22 +231,6 @@ function filterList(allStudents) {
     const list = allStudents.filter((student) => student.house === currentFilter);
     return list;
   }
-}
-
-// Search the list by input text
-function searchList(allStudents) {
-  const list = allStudents.filter((student) => {
-    if (
-      student.firstName.toLowerCase().includes(currentFilter) ||
-      student.middleName.toLowerCase().includes(currentFilter) ||
-      student.nickName.toLowerCase().includes(currentFilter) ||
-      student.lastName.toLowerCase().includes(currentFilter)
-    ) {
-      return list;
-    } else {
-      return allStudents;
-    }
-  });
 }
 
 // Get selected sort option and send it to setSort function
@@ -301,8 +311,13 @@ function sortList(currentList) {
 }
 
 // Make the student array with filter and sorting in mind
-function buildList() {
-  const currentList = filterList(allStudents);
+function buildList(searchValue) {
+  let currentList;
+  if (searchValue !== undefined) {
+    currentList = searchList(allStudents);
+  } else {
+    currentList = filterList(allStudents);
+  }
 
   sortList(currentList);
   displayList(currentList);
@@ -546,4 +561,24 @@ function expelStudent(student) {
   allStudents.splice(allStudents.indexOf(student), 1);
 
   displayList(allStudents);
+}
+
+function hackTheSystem() {
+  // inject myself
+  // - create an object - from Student prototype
+  // - push it to allStudents
+  // - add canBeExpelled property to Student prototype
+  // - add sound effect to expel try
+  //
+  // randomize blood-status for pure-bloods
+  // - forEach method for allStudents
+  // - use Math.random to make student.bloodStatus random value
+  // - const values = ["pure", "half", "muggle"]
+  // - student.bloodStatus = values[Math.floor(Math.random() * values.length)]
+  // - check if hasBeenHacked = true everywhere you want mess with the code
+  //
+  // adding members inquisitorial squad will only work for a limited time
+  // - toggleInquisitorial should trigger twice with at timed delay
+  // - global variable called hasBeenHacked = false
+  // - check if hasBeenHacked = true everywhere you want mess with the code
 }

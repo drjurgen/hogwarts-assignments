@@ -608,6 +608,39 @@ footer .disabled:hover {
 /*  */
 /*  */
 /*  */
+/******** HACK THE SYSTEM ********/
+.hacked-intro {
+  animation-name: hacked_intro_kf;
+  animation-duration: 0.6s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+@keyframes hacked_intro_kf {
+  0% {
+    filter: blur(10px) saturate(50);
+  }
+  100% {
+    filter: blur(0) saturate(1);
+  }
+}
+/******** HACK THE SYSTEM SLUT ********/
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
 /******** MEDIA QUERIES ********/
 @media only screen and (min-width: 800px) {
   nav {

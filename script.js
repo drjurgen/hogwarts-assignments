@@ -31,6 +31,7 @@ let prefects = {
   Slytherin: [],
 }; // Global object with house arrays for prefects
 let hasBeenHacked = false; // Global variable used to keep track of hacking status
+let n = 0; // Counter for the hacking sequence
 
 function start() {
   console.log("ready");
@@ -592,6 +593,11 @@ function expelStudent(student) {
 
 function hackTheSystem() {
   // General hacking settings
+  window.scrollTo(0, 0);
+  document.querySelector("main").classList.add("hacked-intro");
+  document.querySelector(".hogwarts-info-container h1").classList.add("typewritten");
+  document.querySelector("main").addEventListener("animationend", typewrite);
+
   document.querySelector("footer button").removeEventListener("click", hackTheSystem);
   document.querySelector("footer button").disabled = true;
   document.querySelector("footer button").classList.add("disabled");
@@ -632,4 +638,23 @@ function randomizeBloodType() {
       console.log(student.bloodType);
     }
   });
+}
+
+function typewrite() {
+  document.querySelector(".typewritten").textContent = "Hacked Hogwarts";
+  const text = document.querySelector(".typewritten").textContent;
+  document.querySelector(".typewritten").textContent = "";
+  console.log(text);
+
+  const newText = text.substring(0, n + 1);
+  console.log(newText);
+  document.querySelector(".typewritten").textContent = newText;
+
+  if (n === text.length) {
+    console.log("sentence finished");
+    n = 0;
+  } else {
+    n++;
+    setTimeout(typewrite, 150);
+  }
 }

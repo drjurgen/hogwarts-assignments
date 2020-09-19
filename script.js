@@ -456,6 +456,8 @@ function displayStudentModal(student) {
   modalCrest.src = `images/${student.house}.png`; // Display student house crest
   modalCrest.alt = `images/${student.house}.png`;
 
+  document.querySelector("body").style.overflow = "hidden"; // Disable list movement to create focus on modal
+
   if (allStudents.includes(student)) {
     clone.querySelector(".prefect").addEventListener("click", prefectClick);
     function prefectClick() {
@@ -472,6 +474,7 @@ function displayStudentModal(student) {
       document.querySelector(".info-container").classList.add("fade-out");
       document.querySelector(".info-container").addEventListener("animationend", () => {
         modal.style.display = "none";
+        document.querySelector("body").style.overflow = "visible";
       });
       expelStudent(student);
     }
@@ -483,6 +486,10 @@ function displayStudentModal(student) {
   }
 
   // Hack the system below
+  if (hasBeenHacked === true) {
+    // modal.style.top = "-80px";
+  }
+
   if (student.canBeExpelled === false) {
     clone.querySelector(".expel").textContent = `Cannot be expelled!`;
     clone.querySelector(".expel").classList.add("disabled");
@@ -500,6 +507,7 @@ function displayStudentModal(student) {
     document.querySelector(".info-container").classList.add("fade-out");
     document.querySelector(".info-container").addEventListener("animationend", () => {
       modal.style.display = "none";
+      document.querySelector("body").style.overflow = "visible";
     });
   });
 }
@@ -656,6 +664,7 @@ function randomizeBloodType() {
 }
 
 function typewrite() {
+  document.querySelector("main").classList.remove("hacked-intro");
   document.querySelector(".typewritten").textContent = "Hacked Hogwarts";
   const text = document.querySelector(".typewritten").textContent;
   document.querySelector(".typewritten").textContent = "";

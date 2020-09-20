@@ -485,6 +485,7 @@ function displayStudentModal(student) {
         document.querySelector(".info-container").addEventListener("animationend", () => {
           modal.style.display = "none";
           document.querySelector("body").style.overflow = "visible";
+          document.querySelector("body").style.overflowX = "hidden";
         });
         expelStudent(student);
       }
@@ -519,6 +520,7 @@ function displayStudentModal(student) {
       document.querySelector(".info-container").addEventListener("animationend", () => {
         modal.style.display = "none";
         document.querySelector("body").style.overflow = "visible";
+        document.querySelector("body").style.overflowX = "hidden";
       });
     });
   }

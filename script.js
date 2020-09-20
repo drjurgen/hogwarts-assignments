@@ -33,6 +33,7 @@ let prefects = {
 let hasBeenHacked = false; // Global variable used to keep track of hacking status
 let n = 0; // Counter for the hacking sequence
 
+// Start the whole program once all DOM-content is loaded
 function start() {
   console.log("ready");
 
@@ -335,6 +336,7 @@ function displayList(students) {
     console.log("not hacked yet");
   }
 
+  // Display current data for allStudents array (and expelledStudents array)
   document.querySelector(".students-gryffindor").textContent = "Students in Gryffindor: " + allStudents.filter((student) => student.house === "Gryffindor").length;
   document.querySelector(".students-hufflepuff").textContent = "Students in Hufflepuff: " + allStudents.filter((student) => student.house === "Hufflepuff").length;
   document.querySelector(".students-ravenclaw").textContent = "Students in Ravenclaw: " + allStudents.filter((student) => student.house === "Ravenclaw").length;
@@ -382,12 +384,9 @@ function validateName(clone, student) {
 // Show modal for clicked student
 function displayStudentModal(student) {
   document.querySelector("#student-modal").innerHTML = "";
-
   let ModalContainer = document.querySelector("#student-modal");
   let ModalTemplate = document.querySelector("#modal-template");
-
   let clone = ModalTemplate.cloneNode(true).content;
-
   const modal = document.querySelector("#student-modal");
   const modalFullName = clone.querySelector(".student-fullname");
   const modalCredentials = clone.querySelector(".student-credentials");
@@ -395,123 +394,137 @@ function displayStudentModal(student) {
   const modalCrest = clone.querySelector(".house-crest img");
   const modalFrame = clone.querySelector(".info-container");
 
+  modal.style.display = "flex"; // Display the modal
   modalFrame.style.setProperty("--primary-color", `var(--${student.house.toLowerCase()}-primary)`);
   modalFrame.style.setProperty("--secondary-color", `var(--${student.house.toLowerCase()}-secondary)`);
-
-  modal.style.display = "flex"; // Display the modal
-  modalFullName.textContent = student.firstName; // Display student first name
-  modalCredentials.querySelector("p").textContent = `First name: ${student.firstName}`;
-
-  // Display student middel name
-  if (student.middleName !== null) {
-    modalFullName.textContent += `  ${student.middleName}`;
-    modalCredentials.querySelector("p:nth-child(2)").textContent = `Middle name: ${student.middleName}`;
-  } else {
-    modalCredentials.querySelector("p:nth-child(2)").textContent = "";
-  }
-
-  // Display student nick name
-  if (student.nickName !== null) {
-    modalFullName.textContent += ` "${student.nickName}"`;
-    modalCredentials.querySelector("p:nth-child(3)").textContent = `Nick name: ${student.nickName}`;
-  } else {
-    modalCredentials.querySelector("p:nth-child(3)").textContent = "";
-  }
-
-  // Display student last name
-  if (student.lastName !== null) {
-    modalFullName.textContent += ` ${student.lastName}`;
-    modalCredentials.querySelector("p:nth-child(4)").textContent = `Last name: ${student.lastName}`;
-  } else {
-    modalCredentials.querySelector("p:nth-child(4)").textContent = "";
-  }
-
-  modalCredentials.querySelector("p:nth-child(5)").textContent = `Blood status: ${student.bloodType}`;
-
-  if (student.isPrefect === true) {
-    clone.querySelector(".prefect").textContent = "Revoke prefect";
-    modalCredentials.querySelector("p:nth-child(6)").textContent = `Prefect status: ${student.firstName} is prefect!`;
-  } else {
-    modalCredentials.querySelector("p:nth-child(6)").textContent = `Prefect status: ${student.firstName} is not prefect!`;
-    clone.querySelector(".prefect").textContent = "Prefect student";
-  }
-
-  if (student.isMemberOfInqSquad === true) {
-    clone.querySelector(".inquisitorial").textContent = "Revoke inquisitorial membership";
-    modalCredentials.querySelector("p:nth-child(7)").textContent = `Inquisitorial squad status: Member!`;
-  } else {
-    clone.querySelector(".inquisitorial").textContent = "Add to inquisitorial squad";
-    modalCredentials.querySelector("p:nth-child(7)").textContent = `Inquisitorial squad status: Not a member!`;
-  }
-
-  if (student.bloodType !== "Pure blood") {
-    clone.querySelector(".inquisitorial").classList.add("disabled");
-    clone.querySelector(".inquisitorial").disabled = true;
-    clone.querySelector(".inquisitorial").textContent = "Only pure-bloods can join the squad!";
-  }
-
-  modalPhoto.src = `images/${student.photo}`; // Display student photo
-  modalPhoto.alt = student.firstName;
-
-  modalCrest.src = `images/${student.house}.png`; // Display student house crest
-  modalCrest.alt = `images/${student.house}.png`;
-
   document.querySelector("body").style.overflow = "hidden"; // Disable list movement to create focus on modal
+  modalCredentials.querySelector("p:nth-child(5)").textContent = `Blood status: ${student.bloodType}`; // Display blood status
 
-  if (allStudents.includes(student)) {
-    clone.querySelector(".prefect").addEventListener("click", prefectClick);
-    function prefectClick() {
-      checkPrefectStatus(student);
+  displayStudentModalName(); // Display student name in modal
+  function displayStudentModalName() {
+    modalFullName.textContent = student.firstName; // Display student first name
+    modalCredentials.querySelector("p").textContent = `First name: ${student.firstName}`;
+
+    // Display student middel name
+    if (student.middleName !== null) {
+      modalFullName.textContent += `  ${student.middleName}`;
+      modalCredentials.querySelector("p:nth-child(2)").textContent = `Middle name: ${student.middleName}`;
+    } else {
+      modalCredentials.querySelector("p:nth-child(2)").textContent = "";
     }
 
-    clone.querySelector(".inquisitorial").addEventListener("click", inquisitorialClick);
-    function inquisitorialClick() {
-      toggleInquisitorial(student);
+    // Display student nick name
+    if (student.nickName !== null) {
+      modalFullName.textContent += ` "${student.nickName}"`;
+      modalCredentials.querySelector("p:nth-child(3)").textContent = `Nick name: ${student.nickName}`;
+    } else {
+      modalCredentials.querySelector("p:nth-child(3)").textContent = "";
     }
 
-    clone.querySelector(".expel").addEventListener("click", expelClick);
-    function expelClick() {
+    // Display student last name
+    if (student.lastName !== null) {
+      modalFullName.textContent += ` ${student.lastName}`;
+      modalCredentials.querySelector("p:nth-child(4)").textContent = `Last name: ${student.lastName}`;
+    } else {
+      modalCredentials.querySelector("p:nth-child(4)").textContent = "";
+    }
+  }
+
+  displayStudentModalPrefect(); // Display student prefect status in modal
+  function displayStudentModalPrefect() {
+    if (student.isPrefect === true) {
+      clone.querySelector(".prefect").textContent = "Revoke prefect";
+      modalCredentials.querySelector("p:nth-child(6)").textContent = `Prefect status: ${student.firstName} is prefect!`;
+    } else {
+      modalCredentials.querySelector("p:nth-child(6)").textContent = `Prefect status: ${student.firstName} is not prefect!`;
+      clone.querySelector(".prefect").textContent = "Prefect student";
+    }
+  }
+
+  displayStudentModalInq(); // Display student inq squad status in modal
+  function displayStudentModalInq() {
+    if (student.isMemberOfInqSquad === true) {
+      clone.querySelector(".inquisitorial").textContent = "Revoke inquisitorial membership";
+      modalCredentials.querySelector("p:nth-child(7)").textContent = `Inquisitorial squad status: Member!`;
+    } else {
+      clone.querySelector(".inquisitorial").textContent = "Add to inquisitorial squad";
+      modalCredentials.querySelector("p:nth-child(7)").textContent = `Inquisitorial squad status: Not a member!`;
+    }
+
+    if (student.bloodType !== "Pure blood") {
+      clone.querySelector(".inquisitorial").classList.add("disabled");
+      clone.querySelector(".inquisitorial").disabled = true;
+      clone.querySelector(".inquisitorial").textContent = "Only pure-bloods can join the squad!";
+    }
+  }
+
+  displayStudentModalPhoto(); // Display student photo
+  function displayStudentModalPhoto() {
+    modalPhoto.src = `images/${student.photo}`;
+    modalPhoto.alt = student.firstName;
+    modalCrest.src = `images/${student.house}.png`;
+    modalCrest.alt = `images/${student.house}.png`;
+  }
+
+  addStudentActions(); // Add eventlisteners to buttons if student is not expelled
+  function addStudentActions() {
+    if (allStudents.includes(student)) {
+      clone.querySelector(".prefect").addEventListener("click", prefectClick);
+      function prefectClick() {
+        checkPrefectStatus(student);
+      }
+
+      clone.querySelector(".inquisitorial").addEventListener("click", inquisitorialClick);
+      function inquisitorialClick() {
+        toggleInquisitorial(student);
+      }
+
+      clone.querySelector(".expel").addEventListener("click", expelClick);
+      function expelClick() {
+        document.querySelector(".info-container").classList.add("fade-out");
+        document.querySelector(".info-container").addEventListener("animationend", () => {
+          modal.style.display = "none";
+          document.querySelector("body").style.overflow = "visible";
+        });
+        expelStudent(student);
+      }
+    } else {
+      clone.querySelectorAll(".student-actions button").forEach((button) => {
+        button.classList.add("disabled");
+        button.disabled = true;
+      });
+    }
+  }
+
+  checkExpelledStatus(); // Check if student can be expelled
+  function checkExpelledStatus() {
+    if (student.canBeExpelled === false) {
+      clone.querySelector(".expel").textContent = `Cannot be expelled!`;
+      clone.querySelector(".expel").classList.add("disabled");
+      clone.querySelector(".expel").disabled = true;
+    }
+  }
+
+  ModalContainer.appendChild(clone); // Add the modal to the parent container
+
+  addFadeAnimation(); // Add fade animations to modal
+  function addFadeAnimation() {
+    document.querySelector(".info-container").classList.add("fade-in");
+    document.querySelector(".info-container").addEventListener("animationend", () => {
+      document.querySelector(".info-container").classList.remove("fade-in");
+    });
+
+    document.querySelector(".close-info").addEventListener("click", () => {
       document.querySelector(".info-container").classList.add("fade-out");
       document.querySelector(".info-container").addEventListener("animationend", () => {
         modal.style.display = "none";
         document.querySelector("body").style.overflow = "visible";
       });
-      expelStudent(student);
-    }
-  } else {
-    clone.querySelectorAll(".student-actions button").forEach((button) => {
-      button.classList.add("disabled");
-      button.disabled = true;
     });
   }
-
-  // Hack the system below
-  if (hasBeenHacked === true) {
-    // modal.style.top = "-80px";
-  }
-
-  if (student.canBeExpelled === false) {
-    clone.querySelector(".expel").textContent = `Cannot be expelled!`;
-    clone.querySelector(".expel").classList.add("disabled");
-    clone.querySelector(".expel").disabled = true;
-  }
-
-  ModalContainer.appendChild(clone);
-
-  document.querySelector(".info-container").classList.add("fade-in");
-  document.querySelector(".info-container").addEventListener("animationend", () => {
-    document.querySelector(".info-container").classList.remove("fade-in");
-  });
-
-  document.querySelector(".close-info").addEventListener("click", () => {
-    document.querySelector(".info-container").classList.add("fade-out");
-    document.querySelector(".info-container").addEventListener("animationend", () => {
-      modal.style.display = "none";
-      document.querySelector("body").style.overflow = "visible";
-    });
-  });
 }
 
+// Check which prefect action to perform
 function checkPrefectStatus(student) {
   const currentHouse = student.house;
 
@@ -526,6 +539,7 @@ function checkPrefectStatus(student) {
   }
 }
 
+// Display box for removing existing prefects or cancel
 function decidePrefect(student, currentHouse) {
   document.querySelector(".prefect-container").classList.remove("hide");
   document.querySelector(".student-info").classList.add("hide");
@@ -544,7 +558,7 @@ function decidePrefect(student, currentHouse) {
     const selectedDecision = this.dataset.prefect;
     console.log(selectedDecision);
     if (selectedDecision === "0" || selectedDecision === "1") {
-      removePrefect(student, currentHouse, selectedDecision);
+      replacePrefect(student, currentHouse, selectedDecision);
     } else {
       closePrefect();
     }
@@ -552,6 +566,7 @@ function decidePrefect(student, currentHouse) {
   console.log(prefects);
 }
 
+// Add prefect status to currently shown student
 function addPrefect(student, currentHouse) {
   student.isPrefect = true;
   prefects[currentHouse].push(student);
@@ -559,6 +574,7 @@ function addPrefect(student, currentHouse) {
   displayStudentModal(student);
 }
 
+// Revoke prefect status from currently shown student
 function revokePrefect(student, currentHouse) {
   console.log("revoke");
   student.isPrefect = false;
@@ -566,19 +582,23 @@ function revokePrefect(student, currentHouse) {
   displayStudentModal(student);
 }
 
-function removePrefect(student, currentHouse, selectedDecision) {
+// Replace prefect status from clicked student and add currently shown student
+function replacePrefect(student, currentHouse, selectedDecision) {
   prefects[currentHouse][selectedDecision].isPrefect = false;
   prefects[currentHouse].splice(selectedDecision, 1);
   addPrefect(student, currentHouse);
   closePrefect();
 }
 
+// Close prefect decisions if "cancel" is clicked
 function closePrefect() {
   document.querySelector(".prefect-container").classList.add("hide");
   document.querySelector(".student-info").classList.remove("hide");
   document.querySelector(".student-actions").classList.remove("hide");
 }
 
+// Toggle currently shown student's Inquisitorial membership
+// (if hacked then revoke their membership after one second)
 function toggleInquisitorial(student) {
   if (hasBeenHacked === false) {
     if (student.bloodType === "Pure blood") {
@@ -603,6 +623,7 @@ function toggleInquisitorial(student) {
   }
 }
 
+// Expel currently shown student and add them to expelledStudents array
 function expelStudent(student) {
   console.log(`${student.firstName} is now expelled`);
 
@@ -614,8 +635,17 @@ function expelStudent(student) {
   displayList(allStudents);
 }
 
+// Activate hacking sequence
 function hackTheSystem() {
-  // General hacking settings
+  generalHacking(); // General hacking settings
+  injectStudent(); // Injecting myself
+  randomizeBloodType(); // Randomize blood-status for pure-bloods
+  hasBeenHacked = true; // Setting global variable up for hacking settings
+  displayList(allStudents); // Redisplay student list
+}
+
+// Display hacking animation and play audio
+function generalHacking() {
   window.scrollTo(0, 0);
   document.querySelector("main").classList.add("hacked-intro");
   document.querySelector(".hogwarts-info-container h1").classList.add("typewritten");
@@ -628,8 +658,10 @@ function hackTheSystem() {
   console.log("hacked");
   document.querySelector("footer audio").volume = 0.1;
   document.querySelector("footer audio").play();
+}
 
-  // Injecting myself
+// Inject student that cannot be expelled
+function injectStudent() {
   const myself = Object.create(Student);
   myself.firstName = "Nicolai";
   myself.middleName = "H.";
@@ -640,15 +672,10 @@ function hackTheSystem() {
   myself.photo = "jurgen2.png";
   myself.bloodType = "Pure blood";
   myself.canBeExpelled = false;
-
-  randomizeBloodType(); // Randomize blood-status for pure-bloods
-  hasBeenHacked = true; // Setting global variable up for hacking settings
-
-  // Final injections
   allStudents.unshift(myself);
-  displayList(allStudents);
 }
 
+// Randomize bloodtype for pure bloods
 function randomizeBloodType() {
   allStudents.forEach((student) => {
     if (student.bloodType === "Pure blood" && student.canBeExpelled === true) {
@@ -663,6 +690,7 @@ function randomizeBloodType() {
   });
 }
 
+// Show hacked typewrite
 function typewrite() {
   document.querySelector("main").classList.remove("hacked-intro");
   document.querySelector(".typewritten").textContent = "Hacked Hogwarts";
